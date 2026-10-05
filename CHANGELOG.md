@@ -5,6 +5,7 @@
 ### Fixed
 
 - Detect missing or empty RubyGems lockfile checksums in doctor and repo:check before frozen CI fails, without fetching or changing dependencies.
+- Keep generated CLI release notes under Unreleased so the first 0.1.0 release can be prepared without correcting a premature release history.
 
 ## [0.1.0] - 2026-10-05
 
