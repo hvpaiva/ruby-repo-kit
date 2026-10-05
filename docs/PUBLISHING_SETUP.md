@@ -1,4 +1,4 @@
-# First-publication handoff
+# Publication setup and continuation
 
 The source repositories exist and their GitHub policies have been applied and
 verified:
@@ -6,16 +6,17 @@ verified:
 - https://github.com/hvpaiva/ruby-repo-kit
 - https://github.com/hvpaiva/ruby-repo-canary
 
-No gem or version tag has been published. GitHub authentication works in this
-workspace. No RubyGems credential file, RubyGems API environment variable or
-connected browser is available. The missing account step is RubyGems Trusted
-Publishing registration, not another GitHub secret.
+The user confirmed both RubyGems pending-publisher registrations. Toolkit 0.1.0
+has now been published through its trusted publisher, with matching Actions,
+GitHub Release and RubyGems artifact digests. See
+[publication evidence](evidence/PUBLICATION.md). The canary must exercise its own
+publisher. GitHub authentication works locally; no static RubyGems credential
+needs to be installed here.
 
-## RubyGems account step
+## Registered RubyGems publisher identities
 
-In the intended gem owner's account, open
-[pending trusted publishers](https://rubygems.org/profile/oidc/pending_trusted_publishers)
-and create these two entries:
+The user registered these entries in the intended gem owner's account through
+[pending trusted publishers](https://rubygems.org/profile/oidc/pending_trusted_publishers):
 
 | Field | Toolkit | Canary |
 | --- | --- | --- |
@@ -31,21 +32,22 @@ workflows. Both publishing jobs currently live in their own repository. The
 official [RubyGems guide](https://guides.rubygems.org/trusted-publishing/) describes
 pending publishers and their conversion after the first successful publication.
 
-No password, API token or recovery code needs to be copied into chat. Confirming
-that both entries exist is enough to resume the publication gate.
+The toolkit's pending registration was exercised by the successful first
+publication. The canary registration is confirmed by the user but still needs its
+own successful first publication. No password, API token or recovery code needs
+to be copied into chat.
 
 ## Ordered continuation
 
 1. Toolkit protected PR checks and the nonpublishing Release rehearsal passed;
    consult docs/evidence/HOSTED.md for exact identities and limits.
 2. Evidence and the recovery script were committed through protected PR #2.
-3. Toolkit 0.1.0 is prepared in [release PR #3](https://github.com/hvpaiva/ruby-repo-kit/pull/3)
-   using the shared command. Require all checks on its latest head and the pending
-   publisher registration above, then resume
-   `bundle exec ruby-repo-kit release 0.1.0 --push`. The command merges and signs
-   the exact release merge SHA; no tag has been created yet.
-4. Verify actual toolkit OIDC publication, GitHub release and the downloaded gem's
-   identity/digest. A green branch rehearsal cannot substitute for this step.
+3. Completed: toolkit [release PR #3](https://github.com/hvpaiva/ruby-repo-kit/pull/3)
+   merged after all required checks; the shared release command signed the exact
+   merge SHA as v0.1.0. Its tagged workflow published the gem and GitHub Release.
+4. Completed: independent publication verification confirmed actual trusted
+   publishing, attestation, identical downloaded bytes and installed behavior.
+   See evidence/PUBLICATION.md. Do not retry or recreate this published version.
 5. In the canary, resolve against the published toolkit and run
    `bundle lock --add-checksums`. Its bootstrap lockfile was generated offline
    against a local artifact; it is not yet a hosted-installation acceptance result.
