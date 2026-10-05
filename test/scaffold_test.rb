@@ -2,6 +2,7 @@
 
 require_relative "test_helper"
 require "ruby_repo_kit/scaffold"
+require "ruby_repo_kit/release"
 require "open3"
 require "rbconfig"
 require "rubygems/package"
@@ -50,6 +51,26 @@ class ScaffoldTest < Minitest::Test
 
       assert_raises(RubyRepoKit::Error) { scaffold(destination).generate }
       assert_equal "Existing project", File.read(sentinel)
+    end
+  end
+
+  def test_generated_changelog_can_prepare_and_verify_its_first_release
+    with_destination do |destination|
+      scaffold(destination).generate
+      project = RubyRepoKit::Project.load(root: destination)
+      metadata = RubyRepoKit::Release::Metadata.new(project: project)
+      original = File.read(project.path(project.changelog))
+
+      refute_match(/^## \[0\.1\.0\]/, original)
+      assert_includes original, "[Unreleased]: #{project.url}/commits/main"
+      assert_equal "0.1.0", metadata.verify(tag: nil)
+
+      changes = metadata.changes("0.1.0")
+
+      assert_equal original, File.read(project.path(project.changelog))
+      assert_equal File.read(project.path(project.version_file)), changes.fetch(project.version_file)
+      assert_equal "0.1.0", metadata.verify(tag: "v0.1.0", changelog: changes.fetch(project.changelog))
+      assert_raises(RubyRepoKit::Error) { metadata.changes("0.1.0", source: changes) }
     end
   end
 
