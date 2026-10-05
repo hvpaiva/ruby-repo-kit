@@ -4,17 +4,23 @@ Versioned maintenance tools and a focused generator for Ruby CLI repositories.
 Create a project once; share release, packaging, repository checks and lint
 configuration through a development dependency.
 
-Ruby Repo Kit is in initial development. [Current status](docs/STATUS.md) records
-the local, hosted CI and publication gates separately. A configured release
-workflow or a passing local test does not prove that RubyGems OIDC publication
-has succeeded. The dedicated ruby-repo-canary must pass its acceptance gates
-before Slipway or Rich-RI adopt the toolkit.
+Ruby Repo Kit 0.1.1 is published. The dedicated ruby-repo-canary passed G1–G4,
+including actual OIDC publication, a published dependency update and recovery from
+a partial hosted publication. See [the verified cycle](docs/evidence/CYCLE_0_1_1.md).
+G5, adoption by Slipway and Rich-RI with fresh baselines, remains pending;
+[current status](docs/STATUS.md) tracks that work. A passing local test or
+nonpublishing rehearsal alone does not prove RubyGems OIDC publication.
 
 Requires Ruby 3.4 or newer. GitHub operations additionally require Git, the
 authenticated GitHub CLI, and the relevant repository permissions. Releases use
 signed commits and tags and require working Git signing configuration.
 
-## Bootstrap from source
+## Install
+
+    gem install ruby-repo-kit --version 0.1.1
+    ruby-repo-kit --version
+
+## Develop from source
 
 The toolkit develops and packages itself without depending on a published copy
 of its own gem:
@@ -28,9 +34,6 @@ The build command prints the artifact path. Install that artifact with
 gem install --local PATH_TO_ARTIFACT to exercise its installed executable and
 templates. Development dependencies are installed by Bundler; installation of the
 toolkit artifact is a separate validation step.
-
-After a version has actually been published, it can also be installed from
-RubyGems with gem install ruby-repo-kit.
 
 ## Create a CLI
 
@@ -50,13 +53,14 @@ dependency updates, CI and a release workflow.
 Then enter the generated directory and run:
 
     bin/setup
+    bundle lock --add-checksums
     bundle exec rake check
     bundle exec rake audit
 
-Commit the resulting Gemfile.lock. The configured toolkit version must be
-available to dependency resolution. Before its first publication, a locally
-installed toolkit artifact can support a local canary; hosted CI needs an
-accessible distribution of that version.
+Commit the resulting Gemfile.lock with its registry checksums. The scaffold uses
+the published toolkit as a development dependency; hosted CI resolves that
+version from RubyGems. See the [operations guide](docs/OPERATIONS.md#create-a-new-cli)
+for initial GitHub and publisher setup.
 
 ## Adopt the shared tools
 
@@ -73,7 +77,9 @@ The integration consists of:
 - Project-owned CI and release workflow files.
 
 Inspect the [architecture and configuration contract](docs/ARCHITECTURE.md) for
-the Ruby API, ownership boundaries and configuration example.
+the Ruby API, ownership boundaries and configuration example. The
+[adoption procedure](docs/OPERATIONS.md#adopt-an-existing-repository) covers
+baselines, integration checks and protected PRs.
 
 ## Check a repository
 
@@ -138,7 +144,9 @@ GitHub policy setup does not register it.
 
 The workflow's manual dry_run option rehearses build/verification without
 publication. A matching version tag can publish once the external configuration
-is in place. See [the acceptance plan](docs/PLAN.md) for the initial canary sequence.
+is in place. A successful rehearsal does not prove RubyGems authentication or
+publication. Follow the [release and recovery procedures](docs/OPERATIONS.md#prepare-review-and-publish)
+for preparation, exact artifact verification and conservative retries.
 
 ## Inspect and configure GitHub
 
@@ -169,6 +177,8 @@ inherited lint preset then use the new version. Templates affect newly generated
 projects; updating the dependency does not rewrite existing application code,
 tests, documentation or local workflow YAML. Integration changes are explicit
 reviewed edits. During the initial 0.x series, review release notes for each update.
+The [upgrade and rollback guide](docs/OPERATIONS.md#upgrade-through-a-dependency-pr)
+describes the dependency PR, checks and compatibility policy.
 
 ## Contributing and license
 
