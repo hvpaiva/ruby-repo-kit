@@ -88,7 +88,7 @@ class PackageTest < Minitest::Test
         output, error, status = Open3.capture3(environment, RbConfig.ruby, "-e", probe, chdir: directory)
 
         assert_predicate status, :success?, error
-        assert_equal [home, "true", "sample-cli"], output.lines.map(&:strip)
+        assert_equal [File.realpath(home), "true", "sample-cli"], output.lines.map(&:strip)
         refute(Dir.children(directory).any? { |name| name.start_with?("optparse-") })
       end
     end
