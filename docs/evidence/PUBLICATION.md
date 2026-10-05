@@ -75,9 +75,9 @@ downloaded artifacts and the smoke-check log are retained locally under ignored
 
 ## Gate boundary
 
-The toolkit now has a real first publication with verified byte identity and
-installed behavior. This result does not itself satisfy canary G3 or G4. The
-generated consumer must still pass its own hosted checks and rehearsal, publish
-through its own pending publisher, and provide the subsequent actual
-update/release/recovery evidence required by the plan. Existing product
-repositories remain read-only until their prerequisite gates are met.
+The toolkit has a real first publication with verified byte identity and installed
+behavior. This result does not itself satisfy canary G3 or G4. Subsequent,
+independent [canary evidence](CANARY.md) closes G3 and verifies its first actual
+publication. G4 remains partial until the actual update/release/recovery cycle
+required by the plan is complete. Existing product repositories remain read-only
+until their prerequisite gates are met.

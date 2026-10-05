@@ -6,12 +6,12 @@ verified:
 - https://github.com/hvpaiva/ruby-repo-kit
 - https://github.com/hvpaiva/ruby-repo-canary
 
-The user confirmed both RubyGems pending-publisher registrations. Toolkit 0.1.0
-has now been published through its trusted publisher, with matching Actions,
-GitHub Release and RubyGems artifact digests. See
-[publication evidence](evidence/PUBLICATION.md). The canary must exercise its own
-publisher. GitHub authentication works locally; no static RubyGems credential
-needs to be installed here.
+The user confirmed both RubyGems pending-publisher registrations. Toolkit and
+canary 0.1.0 have each been published through their own trusted publishers, with
+matching Actions, GitHub Release and RubyGems artifact digests. See
+[toolkit publication](evidence/PUBLICATION.md) and
+[canary acceptance](evidence/CANARY.md). No new account setup is required from the
+user; no static RubyGems credential needs to be installed here.
 
 ## Registered RubyGems publisher identities
 
@@ -32,10 +32,8 @@ workflows. Both publishing jobs currently live in their own repository. The
 official [RubyGems guide](https://guides.rubygems.org/trusted-publishing/) describes
 pending publishers and their conversion after the first successful publication.
 
-The toolkit's pending registration was exercised by the successful first
-publication. The canary registration is confirmed by the user but still needs its
-own successful first publication. No password, API token or recovery code needs
-to be copied into chat.
+Both pending registrations were exercised by their successful first publications.
+No password, API token or recovery code needs to be copied into chat.
 
 ## Ordered continuation
 
@@ -48,14 +46,19 @@ to be copied into chat.
 4. Completed: independent publication verification confirmed actual trusted
    publishing, attestation, identical downloaded bytes and installed behavior.
    See evidence/PUBLICATION.md. Do not retry or recreate this published version.
-5. In the canary, resolve against the published toolkit and run
-   `bundle lock --add-checksums`. Its bootstrap lockfile was generated offline
-   against a local artifact; it is not yet a hosted-installation acceptance result.
-   Commit the checksum update through a PR and require all seven CI checks.
-6. Rehearse then publish canary 0.1.0 through the same reviewed release flow.
-   Record run URLs, commit/tag identity, artifact digest and installed behavior.
-7. Exercise a subsequent actual toolkit/canary update and release. Local
-   version-only upgrade evidence is useful but does not replace this hosted gate.
+5. Completed: canary PR #1 populated checksums against published toolkit 0.1.0;
+   all seven hosted checks passed. PR #2 corrected the initial changelog after
+   real preparation exposed a generator defect. Toolkit PR #5 fixes that generator
+   and adds checksum preflight for the upcoming 0.1.1 release.
+6. Completed: canary release PR #3 passed all seven checks and its exact-head
+   rehearsal, then published 0.1.0 through its own trusted publisher. Independent
+   verification confirmed all artifact digests, attestation and installed behavior.
+   G3 is closed; G4 is partially satisfied. See evidence/CANARY.md.
+7. Next: publish toolkit 0.1.1 with the fixes and small compatibility adapters;
+   adopt that published development dependency in the canary through a protected
+   PR, then complete its second actual release/recovery cycle. Preserve the
+   consumer's application behavior and keep tooling out of runtime dependencies.
+   Local version-only upgrade evidence does not replace this hosted gate.
 8. Only after G1-G4: refresh Slipway/Rich-RI baselines and prepare isolated,
    rollbackable adoption PRs. Respect the independent ongoing Rich-RI changes.
 

@@ -4,7 +4,7 @@ Updated: 2026-10-04 (America/Sao_Paulo).
 
 ## Current phase
 
-P3: toolkit 0.1.0 is published; complete the canary's hosted acceptance gates.
+P3: toolkit and canary 0.1.0 are published; validate the real 0.1.1 update cycle.
 The existing product repositories have NOT been migrated.
 
 ## Immediate continuation
@@ -18,11 +18,25 @@ RubyGems, the GitHub Release and Actions have identical SHA256; the published ge
 passed isolated installation and installed-generator smoke checks. See
 [publication evidence](evidence/PUBLICATION.md).
 
-Continue with the canary: complete its lockfile checksums against the published
-toolkit through a protected PR, require all seven checks, then rehearse and
-publish its own release. Follow with an actual toolkit/consumer update and
-release/recovery evidence. G3/G4 remain open until those consumer gates pass;
-toolkit publication alone does not close them. Do not republish toolkit 0.1.0.
+The canary's corrected release candidate passed all seven PR checks and rehearsal
+37252940888 at exact head `8001c2ce30930f19fbd7d49d598f04ea1abd2081`, closing G3.
+Its signed v0.1.0 tag points to merge
+`2604a94dd4d28da7383d0a781997ac7c64524c17`; actual release run 37253081855 passed.
+RubyGems, GitHub Release and Actions bytes match; the downloaded published gem
+passed six isolated CLI behavior checks with no toolkit runtime dependency.
+Repeating the real release command recognized the same completed hosted run with
+no new tag/publication or worktree changes. This proves completed-release
+idempotence, not recovery from an injected hosted publication failure. See
+[canary evidence](evidence/CANARY.md).
+
+Next: complete toolkit 0.1.1, adopt its published version in the canary through a
+protected dependency-update PR, then exercise a second actual canary release and
+record recovery/resumption evidence. Toolkit PR #5 already merged checksum
+preflight and first-release generator fixes as `00ff02332479873397d72d3efa817316d8782acd`;
+small compatibility adapters are being prepared before that release. G4 is
+partially satisfied by both first publications but remains open for the subsequent
+cycle. No new account setup is required from the user. Do not recreate either
+published 0.1.0 version or modify the existing products yet.
 
 ## User authorization and constraints
 
@@ -32,7 +46,7 @@ User has independently asked another agent to fix Rich-RI and adjust CI.
 User accepted names `ruby-repo-kit` and `ruby-repo-canary`, and a dedicated minimal
 canary, in normal chat. Both GitHub repo endpoints under hvpaiva and RubyGems gem
 API endpoints initially returned HTTP 404 on 2026-10-04. Both GitHub repositories
-now exist, and toolkit 0.1.0 is published; the initial availability checks are
+now exist, and both 0.1.0 gems are published; the initial availability checks are
 historical evidence rather than a current registry state.
 User cannot access queued questions over phone SSH. Choices have been restated
 in normal text; avoid asynchronous question widgets going forward.
@@ -52,9 +66,10 @@ in normal text; avoid asynchronous question widgets going forward.
 
 - [x] G1: toolkit tests and independent gem packaging pass (Linux/Ruby 4.0.7).
 - [x] G2: generated canary local installation/behavior/upgrade/recovery pass.
-- [ ] G3: canary GitHub CI and protected release rehearsal pass.
+- [x] G3: canary GitHub CI and protected release rehearsal pass on the corrected candidate.
 - [ ] G4: canary actual publication and subsequent upgrade/release prove OIDC,
   immutable artifact identity, and recovery (or an explicit user-scoped substitute).
+  First publication and installed identity passed; the real 0.1.1 cycle remains.
 - [ ] G5: existing repository baseline recaptured; canary gate evidence reviewed;
   isolated migration PRs preserve application/package/CI/release contracts.
 
@@ -63,7 +78,7 @@ in normal text; avoid asynchronous question widgets going forward.
 1. Read PLAN.md and DECISIONS.md; inspect git status in this toolkit.
 2. Read INVESTIGATION.md for original audit rationale.
 3. Consult PUBLISHING_SETUP.md and docs/evidence/ for the remaining hosted gates.
-4. Complete canary hosted acceptance using the registered publisher and published toolkit.
+4. Complete toolkit 0.1.1, the canary's dependency update, and the second release/recovery cycle.
 5. Do NOT modify Slipway/Rich-RI before G1-G4; never silently weaken a gate.
 
 Created gem skeleton, Project configuration, Commands runner, Package support,
@@ -101,12 +116,12 @@ evolving Rich-RI was observed at 9328c1a53c3560c02d480ece13d4ba34c90120d6 (clean
 
 Hosted prerequisites: GitHub CLI is authenticated as hvpaiva. The user completed
 both RubyGems pending-publisher registrations for workflow release.yml and
-environment release. Toolkit's actual OIDC publication succeeded; the canary must
-exercise its own registration. No static RubyGems credential was added locally.
+environment release. Both projects' actual OIDC publications succeeded through
+their own publisher registrations. No static RubyGems credential was added locally.
 INVESTIGATION.md preserves original comparison and architecture tradeoffs.
 Public GitHub repositories now exist for both names, with initial signed commits
-and GitHub policy applied/verified. Toolkit v0.1.0 is published with a verified
-signed tag; see evidence/PUBLICATION.md for immutable identities.
+and GitHub policy applied/verified. Both v0.1.0 gems are published with verified
+signed tags; see evidence/PUBLICATION.md and evidence/CANARY.md for identities.
 Toolkit initial commit cfcc767de4ff6beacd1cb4eb9fa01952b6f10654.
 Initial toolkit hosted CI 37249760068 exposed empty checksums from the offline
 lockfile. PR https://github.com/hvpaiva/ruby-repo-kit/pull/1 populates checksums
@@ -121,6 +136,10 @@ attestation verification against the workflow/commit. Both publishing jobs were
 skipped. See docs/evidence/HOSTED.md; this is TOOLKIT evidence, not canary G3/G4.
 Initial canary CI 37249904838 failed on empty frozen-lock checksums; its
 fresh-dependencies job separately could not resolve the then-unpublished toolkit.
-Toolkit publication has removed the registry blocker. Complete the canary's
-lockfile checksums and rerun all hosted checks. See PUBLISHING_SETUP.md for the
-registered account fields and ordered continuation; G3/G4 remain unsatisfied.
+Canary PR #1 completed checksums against the published toolkit and passed all
+seven checks. A subsequent real preparation attempt safely exposed a generator
+defect: the initial changelog already claimed a released 0.1.0. Canary PR #2 moved
+those notes under Unreleased; release PR #3 then prepared normally and passed the
+exact-head checks/rehearsal above. Toolkit PR #5 adds regression coverage and fixes
+the generator for the upcoming 0.1.1. G3 is satisfied; G4 remains partial. See
+PUBLISHING_SETUP.md for the ordered continuation.

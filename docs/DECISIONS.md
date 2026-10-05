@@ -24,12 +24,16 @@
     published from the signed exact merge tag through the shared release engine;
     independent registry/artifact/installation evidence is in
     [PUBLICATION.md](evidence/PUBLICATION.md). Canary acceptance remains separate.
+13. Canary G3 passed on the corrected, prepared release candidate. Its actual
+    0.1.0 publication also passed independent artifact/provenance/installation
+    verification; see [CANARY.md](evidence/CANARY.md). G4 remains partial until the
+    subsequent real update/release/recovery cycle. No user account step remains.
 
 ## Pending
 
-- Canary hosted CI, protected rehearsal and its own trusted-publisher publication.
 - Subsequent actual toolkit/consumer update, release and recovery evidence before
-  migrating either existing product. See STATUS.md gates G3/G4 and PLAN.md.
+  migrating either existing product. The next toolkit version is 0.1.1; see
+  STATUS.md gate G4 and PLAN.md. Existing repository baselines must be recaptured.
 
 ## Investigation references
 
