@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-05
+
 ### Added
 
 - Preserve consumer package smoke checks with application environment overrides while keeping isolated gem loading.
@@ -22,5 +24,6 @@
 - Share release preparation, recovery, artifact verification and isolated package checks through a development gem.
 - Validate repository contracts and plan, verify or apply the initial GitHub maintenance policy.
 
-[Unreleased]: https://github.com/hvpaiva/ruby-repo-kit/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/hvpaiva/ruby-repo-kit/compare/v0.1.1...HEAD
 [0.1.0]: https://github.com/hvpaiva/ruby-repo-kit/releases/tag/v0.1.0
+[0.1.1]: https://github.com/hvpaiva/ruby-repo-kit/releases/tag/v0.1.1
