@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Detect missing or empty RubyGems lockfile checksums in doctor and repo:check before frozen CI fails, without fetching or changing dependencies.
+
 ## [0.1.0] - 2026-10-05
 
 ### Added

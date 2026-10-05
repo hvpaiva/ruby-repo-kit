@@ -55,6 +55,25 @@ class ChecksTest < Minitest::Test
     end
   end
 
+  def test_doctor_rejects_incomplete_lockfile_checksums_before_loading_project_code
+    in_project do |project|
+      write_project(project)
+      File.write(project.path("Gemfile.lock"), <<~LOCK)
+        GEM
+          remote: https://rubygems.org/
+          specs:
+            rake (13.4.2)
+
+        CHECKSUMS
+          rake (13.4.2)
+      LOCK
+      File.write(project.path(project.gemspec), "raise 'gemspec must not run before lockfile preflight'\n")
+      error = assert_raises(RubyRepoKit::Error) { check(project) }
+
+      assert_match(/empty or missing CHECKSUMS.*rake-13.4.2/, error.message)
+    end
+  end
+
   def test_consumer_toolkit_dependency_must_not_be_runtime
     in_project do |project|
       write_project(project, runtime: true)
