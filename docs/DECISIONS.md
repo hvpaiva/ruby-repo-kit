@@ -20,12 +20,16 @@
     separate proof from local/fake-runner tests. No production canary on old gems.
 11. User accepted `ruby-repo-kit` and `ruby-repo-canary` and the dedicated minimal
     canary scope in normal chat on 2026-10-04. Names are no longer provisional.
+12. User confirmed both RubyGems pending trusted publishers. Toolkit 0.1.0 was
+    published from the signed exact merge tag through the shared release engine;
+    independent registry/artifact/installation evidence is in
+    [PUBLICATION.md](evidence/PUBLICATION.md). Canary acceptance remains separate.
 
 ## Pending
 
-- GitHub repo + RubyGems gem API endpoints returned 404 for both accepted names.
-  Names are not reserved; recheck immediately before publication.
-- Hosted setup/publication details, after concrete local artifacts are reviewable.
+- Canary hosted CI, protected rehearsal and its own trusted-publisher publication.
+- Subsequent actual toolkit/consumer update, release and recovery evidence before
+  migrating either existing product. See STATUS.md gates G3/G4 and PLAN.md.
 
 ## Investigation references
 

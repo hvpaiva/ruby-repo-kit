@@ -1,8 +1,10 @@
 # Hosted CI and release rehearsal
 
 Observed 2026-10-04 America/Sao_Paulo (2026-10-05 UTC). This evidence covers the
-toolkit's hosted CI and an unpublished artifact. Canary gates G3 and G4 remain
-unsatisfied; it does not authorize migrating Slipway or Rich-RI.
+toolkit's first hosted CI and unpublished rehearsal artifact. The subsequent
+actual toolkit 0.1.0 publication is recorded separately in
+[PUBLICATION.md](PUBLICATION.md). Canary gates G3 and G4 remain unsatisfied; neither
+toolkit result alone authorizes migrating Slipway or Rich-RI.
 
 ## Toolkit CI
 
@@ -81,10 +83,11 @@ verification JSON and installed-package log are retained beside the download.
 This proves hosted build provenance and the checked artifact's identity. It does
 not prove RubyGems trusted-publisher authentication, a version-tag ancestry check,
 release-environment admission, gem publication, or GitHub Release creation: those
-paths did not run. The downloaded branch artifact is rehearsal evidence; a future
-tagged release must produce and verify its own artifact.
+paths did not run in this rehearsal. The downloaded branch artifact remains
+rehearsal evidence; the later tagged release produced and verified its own
+distinct artifact, as recorded in PUBLICATION.md.
 
-## Canary remains blocked on first toolkit publication
+## Initial canary failure and remaining acceptance
 
 The [initial canary CI run](https://github.com/hvpaiva/ruby-repo-canary/actions/runs/37249904838)
 at `c295b44743a8e71fb6f18e0b4983318d38d8aa85` failed before executing application
@@ -96,9 +99,10 @@ tests. There are two distinct observed causes:
   `ruby-repo-kit (~> 0.1.0)` (exit 7). Its tests were therefore skipped.
 
 `commits` was skipped as expected for the initial push. No canary dependency
-source was changed to make these checks appear successful. After real toolkit
-publication, complete its consumer lockfile checksums through a reviewed PR and
-rerun all hosted checks and its protected release rehearsal. G3 remains open
+source was changed to make these checks appear successful. Toolkit 0.1.0 is now
+published; its registry blocker has been removed. Complete the consumer lockfile
+checksums through a reviewed PR and rerun all hosted checks and its protected
+release rehearsal. G3 remains open
 until that consumer evidence exists. G4 additionally requires the actual canary
 publication and subsequent update/release/recovery evidence described in
 [PLAN.md](../PLAN.md), or an explicit user-approved substitute. Toolkit rehearsal

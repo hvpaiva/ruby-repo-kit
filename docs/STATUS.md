@@ -4,24 +4,25 @@ Updated: 2026-10-04 (America/Sao_Paulo).
 
 ## Current phase
 
-P3: local toolkit/canary gates passed; complete hosted bootstrap and publication.
+P3: toolkit 0.1.0 is published; complete the canary's hosted acceptance gates.
 The existing product repositories have NOT been migrated.
 
 ## Immediate continuation
 
-The first toolkit release is prepared in
-https://github.com/hvpaiva/ruby-repo-kit/pull/3 (`release/v0.1.0`). The toolkit's
-own command performed real policy verification, preparation, full checks, signed
-commit, branch push and PR creation. No tag, merge of this release PR, or gem push
-has occurred. Its initial release commit is c750c7b6e13337bb12ea6f2c2540228560b68550;
-this handoff is a separate documentation commit on that PR.
+The user confirmed both RubyGems pending publishers. Toolkit release PR #3 merged
+after all seven checks passed. Signed tag `v0.1.0` points to merge commit
+`b524e95b1f3fd041d5123768dd2a655c3805cb10`; tagged release run
+https://github.com/hvpaiva/ruby-repo-kit/actions/runs/37252275299 completed actual
+trusted publication and GitHub Release creation. Independent downloads from
+RubyGems, the GitHub Release and Actions have identical SHA256; the published gem
+passed isolated installation and installed-generator smoke checks. See
+[publication evidence](evidence/PUBLICATION.md).
 
-Before publishing, require the latest PR head's seven checks and confirmation that
-the two RubyGems pending publishers in PUBLISHING_SETUP.md exist. Then resume with
-`bundle exec ruby-repo-kit release 0.1.0 --push`; the engine rechecks PR/tag state.
-Do not manually tag current main or bypass protected checks. RubyGems account
-setup is the remaining user action; the plan is not waiting for new architecture
-or naming approval. If registration is still unavailable, keep G3/G4 open.
+Continue with the canary: complete its lockfile checksums against the published
+toolkit through a protected PR, require all seven checks, then rehearse and
+publish its own release. Follow with an actual toolkit/consumer update and
+release/recovery evidence. G3/G4 remain open until those consumer gates pass;
+toolkit publication alone does not close them. Do not republish toolkit 0.1.0.
 
 ## User authorization and constraints
 
@@ -30,8 +31,9 @@ the sequence: validate a third CLI FIRST; migrate Slipway/Rich-RI only afterward
 User has independently asked another agent to fix Rich-RI and adjust CI.
 User accepted names `ruby-repo-kit` and `ruby-repo-canary`, and a dedicated minimal
 canary, in normal chat. Both GitHub repo endpoints under hvpaiva and RubyGems gem
-API endpoints returned HTTP 404 on 2026-10-04. This is availability evidence, not
-a reservation or a guarantee against a concurrent registration.
+API endpoints initially returned HTTP 404 on 2026-10-04. Both GitHub repositories
+now exist, and toolkit 0.1.0 is published; the initial availability checks are
+historical evidence rather than a current registry state.
 User cannot access queued questions over phone SSH. Choices have been restated
 in normal text; avoid asynchronous question widgets going forward.
 
@@ -61,7 +63,7 @@ in normal text; avoid asynchronous question widgets going forward.
 1. Read PLAN.md and DECISIONS.md; inspect git status in this toolkit.
 2. Read INVESTIGATION.md for original audit rationale.
 3. Consult PUBLISHING_SETUP.md and docs/evidence/ for the remaining hosted gates.
-4. Confirm RubyGems pending publishers before any actual version tag/publication.
+4. Complete canary hosted acceptance using the registered publisher and published toolkit.
 5. Do NOT modify Slipway/Rich-RI before G1-G4; never silently weaken a gate.
 
 Created gem skeleton, Project configuration, Commands runner, Package support,
@@ -97,13 +99,14 @@ and produced one genuinely signed commit, using only a temporary local Git remot
 Existing repos remain read-only. Slipway HEAD remains c8e9bde; independently
 evolving Rich-RI was observed at 9328c1a53c3560c02d480ece13d4ba34c90120d6 (clean).
 
-Hosted prerequisites: GitHub CLI is authenticated as hvpaiva; no RubyGems credential
-file or connected browser is available here. A real OIDC first publication requires
-RubyGems pending publishers for both accepted names, workflow release.yml,
-environment release. Do not replace that gate with a simulated successful push.
+Hosted prerequisites: GitHub CLI is authenticated as hvpaiva. The user completed
+both RubyGems pending-publisher registrations for workflow release.yml and
+environment release. Toolkit's actual OIDC publication succeeded; the canary must
+exercise its own registration. No static RubyGems credential was added locally.
 INVESTIGATION.md preserves original comparison and architecture tradeoffs.
 Public GitHub repositories now exist for both names, with initial signed commits
-and GitHub policy applied/verified. No version tag or RubyGems gem was published.
+and GitHub policy applied/verified. Toolkit v0.1.0 is published with a verified
+signed tag; see evidence/PUBLICATION.md for immutable identities.
 Toolkit initial commit cfcc767de4ff6beacd1cb4eb9fa01952b6f10654.
 Initial toolkit hosted CI 37249760068 exposed empty checksums from the offline
 lockfile. PR https://github.com/hvpaiva/ruby-repo-kit/pull/1 populates checksums
@@ -116,7 +119,8 @@ https://github.com/hvpaiva/ruby-repo-kit/actions/runs/37250441649. The downloade
 gem matched the recorded SHA256, installed independently, and passed GitHub
 attestation verification against the workflow/commit. Both publishing jobs were
 skipped. See docs/evidence/HOSTED.md; this is TOOLKIT evidence, not canary G3/G4.
-Initial canary CI 37249904838 cannot resolve
-the unpublished toolkit; after first publication its lockfile must be completed
-with checksums and all hosted checks rerun. See PUBLISHING_SETUP.md for exact
-account fields and the ordered continuation; G3/G4 remain unsatisfied.
+Initial canary CI 37249904838 failed on empty frozen-lock checksums; its
+fresh-dependencies job separately could not resolve the then-unpublished toolkit.
+Toolkit publication has removed the registry blocker. Complete the canary's
+lockfile checksums and rerun all hosted checks. See PUBLISHING_SETUP.md for the
+registered account fields and ordered continuation; G3/G4 remain unsatisfied.
