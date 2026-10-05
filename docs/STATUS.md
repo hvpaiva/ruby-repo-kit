@@ -4,7 +4,7 @@ Updated: 2026-10-04 (America/Sao_Paulo).
 
 ## Current phase
 
-P3: toolkit and canary 0.1.0 are published; validate the real 0.1.1 update cycle.
+P4: G1–G4 passed; recapture existing product baselines and prepare isolated adoption PRs.
 The existing product repositories have NOT been migrated.
 
 ## Immediate continuation
@@ -29,14 +29,24 @@ no new tag/publication or worktree changes. This proves completed-release
 idempotence, not recovery from an injected hosted publication failure. See
 [canary evidence](evidence/CANARY.md).
 
-Next: complete toolkit 0.1.1, adopt its published version in the canary through a
-protected dependency-update PR, then exercise a second actual canary release and
-record recovery/resumption evidence. Toolkit PR #5 already merged checksum
-preflight and first-release generator fixes as `00ff02332479873397d72d3efa817316d8782acd`;
-small compatibility adapters are being prepared before that release. G4 is
-partially satisfied by both first publications but remains open for the subsequent
-cycle. No new account setup is required from the user. Do not recreate either
-published 0.1.0 version or modify the existing products yet.
+Toolkit 0.1.1 was published from signed tag `v0.1.1`, pointing to merge commit
+`b02066722fe49b68024c45a4491d4a3cf0e3b6e6`, in run 37254345206. Canary PR #5 adopted that published development dependency
+without application changes; all seven checks passed. Its release PR #6 passed
+all seven checks and merged as `ca474f4f53719b5a823766e5a43cf7c879fd19a8`.
+
+Canary v0.1.1 run 37254971421 deliberately failed its terminal GitHub Release job
+after actual RubyGems publication succeeded. The engine diagnosed partial
+publication and prescribed a retry of that job alone. Attempt 2 completed the
+immutable GitHub Release; publisher timestamps/logs, registry creation timestamp,
+gem bytes and signed tag prove that publication was not repeated. Independent
+three-source digest, exact-tag attestation and isolated installed CLI checks
+passed. See [the actual cycle](evidence/CYCLE_0_1_1.md) and the separate
+[published-package local upgrade/recovery](evidence/PUBLISHED_UPGRADE_RECOVERY.md).
+
+The final release-command replay returned exit 0 and recognized the same successful
+run without mutation commands. G4 is closed. Review G1–G4 and recapture each
+product's current baseline before isolated migration PRs.
+No new account setup is required from the user. Do not recreate published versions.
 
 ## User authorization and constraints
 
@@ -46,8 +56,8 @@ User has independently asked another agent to fix Rich-RI and adjust CI.
 User accepted names `ruby-repo-kit` and `ruby-repo-canary`, and a dedicated minimal
 canary, in normal chat. Both GitHub repo endpoints under hvpaiva and RubyGems gem
 API endpoints initially returned HTTP 404 on 2026-10-04. Both GitHub repositories
-now exist, and both 0.1.0 gems are published; the initial availability checks are
-historical evidence rather than a current registry state.
+now exist, and both 0.1.0 and 0.1.1 gems are published; the initial availability
+checks are historical evidence rather than a current registry state.
 User cannot access queued questions over phone SSH. Choices have been restated
 in normal text; avoid asynchronous question widgets going forward.
 
@@ -67,9 +77,9 @@ in normal text; avoid asynchronous question widgets going forward.
 - [x] G1: toolkit tests and independent gem packaging pass (Linux/Ruby 4.0.7).
 - [x] G2: generated canary local installation/behavior/upgrade/recovery pass.
 - [x] G3: canary GitHub CI and protected release rehearsal pass on the corrected candidate.
-- [ ] G4: canary actual publication and subsequent upgrade/release prove OIDC,
-  immutable artifact identity, and recovery (or an explicit user-scoped substitute).
-  First publication and installed identity passed; the real 0.1.1 cycle remains.
+- [x] G4: actual canary 0.1.0/0.1.1 publication, published-toolkit adoption,
+  artifact identity, installed behavior and scoped hosted partial-publication
+  recovery passed. Completed-release replay also passed; see evidence/CYCLE_0_1_1.md.
 - [ ] G5: existing repository baseline recaptured; canary gate evidence reviewed;
   isolated migration PRs preserve application/package/CI/release contracts.
 
@@ -77,9 +87,13 @@ in normal text; avoid asynchronous question widgets going forward.
 
 1. Read PLAN.md and DECISIONS.md; inspect git status in this toolkit.
 2. Read INVESTIGATION.md for original audit rationale.
-3. Consult PUBLISHING_SETUP.md and docs/evidence/ for the remaining hosted gates.
-4. Complete toolkit 0.1.1, the canary's dependency update, and the second release/recovery cycle.
+3. Consult PUBLISHING_SETUP.md, OPERATIONS.md and docs/evidence/ for publication identities and procedures.
+4. Review the completed G4 evidence, then recapture each existing product baseline for G5.
 5. Do NOT modify Slipway/Rich-RI before G1-G4; never silently weaken a gate.
+
+## Implementation history
+
+The observations below describe earlier milestones; current state is above.
 
 Created gem skeleton, Project configuration, Commands runner, Package support,
 CLI and Rake adapters. `bundle install --local` passed with cached gems. Initial
@@ -141,5 +155,5 @@ seven checks. A subsequent real preparation attempt safely exposed a generator
 defect: the initial changelog already claimed a released 0.1.0. Canary PR #2 moved
 those notes under Unreleased; release PR #3 then prepared normally and passed the
 exact-head checks/rehearsal above. Toolkit PR #5 adds regression coverage and fixes
-the generator for the upcoming 0.1.1. G3 is satisfied; G4 remains partial. See
-PUBLISHING_SETUP.md for the ordered continuation.
+the generator in published 0.1.1. The subsequent real upgrade and hosted recovery
+are recorded in evidence/CYCLE_0_1_1.md; see PUBLISHING_SETUP.md for continuation.
