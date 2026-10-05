@@ -83,7 +83,14 @@ the Ruby API, ownership boundaries and configuration example.
 
 Doctor validates the local maintenance contract: required files, package
 metadata, version consistency, package manifest, development dependency and
-shared lint configuration. It does not certify code quality, run the full test
+shared lint configuration. If Gemfile.lock enables CHECKSUMS, it also detects
+missing or empty checksums for RubyGems dependencies before frozen CI installation.
+PATH and Git dependencies do not need gem artifact checksums. This inspection
+does not install dependencies, access the network or modify the lockfile. To fix
+incomplete checksums, run `bundle lock --add-checksums`, review and commit the
+lockfile. This check verifies checksum presence; Bundler verifies artifact bytes
+when installing. Existing lockfiles without CHECKSUMS retain Bundler's opt-in
+behavior. Doctor does not certify code quality, run the full test
 suite, or verify hosted settings.
 
 The repository's check task combines lint, tests with coverage, structural checks

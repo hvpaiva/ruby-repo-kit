@@ -5,6 +5,7 @@ require "open3"
 require "psych"
 require "rbconfig"
 require_relative "specification"
+require_relative "checks/lockfile"
 
 module RubyRepoKit
   # Local structural checks. Evaluating a gemspec/Gemfile is trusted project code;
@@ -27,6 +28,7 @@ module RubyRepoKit
       [@project.gemspec, @project.version_file, @project.changelog, "Gemfile", "Rakefile"].each do |file|
         require_file(file)
       end
+      Lockfile.new(path: @project.path("Gemfile.lock")).check
       specification = Specification.load(project: @project)
       metadata(specification)
       manifest(specification)
