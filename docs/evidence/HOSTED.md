@@ -3,8 +3,9 @@
 Observed 2026-10-04 America/Sao_Paulo (2026-10-05 UTC). This evidence covers the
 toolkit's first hosted CI and unpublished rehearsal artifact. The subsequent
 actual toolkit 0.1.0 publication is recorded separately in
-[PUBLICATION.md](PUBLICATION.md). Canary gates G3 and G4 remain unsatisfied; neither
-toolkit result alone authorizes migrating Slipway or Rich-RI.
+[PUBLICATION.md](PUBLICATION.md). Subsequent canary evidence is in
+[CANARY.md](CANARY.md): G3 passed and first publication is verified, while G4
+remains partial. Neither toolkit result alone authorizes migrating Slipway or Rich-RI.
 
 ## Toolkit CI
 
@@ -99,11 +100,10 @@ tests. There are two distinct observed causes:
   `ruby-repo-kit (~> 0.1.0)` (exit 7). Its tests were therefore skipped.
 
 `commits` was skipped as expected for the initial push. No canary dependency
-source was changed to make these checks appear successful. Toolkit 0.1.0 is now
-published; its registry blocker has been removed. Complete the consumer lockfile
-checksums through a reviewed PR and rerun all hosted checks and its protected
-release rehearsal. G3 remains open
-until that consumer evidence exists. G4 additionally requires the actual canary
-publication and subsequent update/release/recovery evidence described in
-[PLAN.md](../PLAN.md), or an explicit user-approved substitute. Toolkit rehearsal
-success and the separate local upgrade/recovery rehearsals do not close G3/G4.
+source was changed to make these checks appear successful. After toolkit 0.1.0
+publication, canary PR #1 completed the checksums and passed hosted CI. The
+corrected release candidate subsequently passed G3 and its own first actual
+publication; see CANARY.md for those distinct source identities. G4 still requires
+the subsequent actual update/release/recovery evidence described in
+[PLAN.md](../PLAN.md), or an explicit user-approved substitute. The historical
+toolkit rehearsal and local upgrade/recovery rehearsals do not replace that cycle.

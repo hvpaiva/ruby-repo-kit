@@ -36,6 +36,15 @@ dependency updates. Preserve project-owned code and intentional differences.
 
 ## P3 — Hosted canary acceptance
 
+Current evidence: G3 passed on the corrected canary release candidate. Both
+toolkit and canary 0.1.0 were actually published through their own trusted
+publishers; downloaded bytes, attestations and installed behavior were verified.
+See evidence/PUBLICATION.md and evidence/CANARY.md. G4 remains open for toolkit
+0.1.1, its adoption by the canary, and the second real release/recovery cycle.
+First-publication defects found by the canary are fixed in toolkit PR #5; small
+compatibility adapters are being prepared before 0.1.1. No new user account step
+is pending, and existing products remain read-only.
+
 - Set final names before creating public repositories or publishing immutable gems.
 - Review workflow, rulesets, environment and publisher configuration concretely.
 - Establish GitHub CI on supported Ruby/OS cells and lint/security/generated checks.
