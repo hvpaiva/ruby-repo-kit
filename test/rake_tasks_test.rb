@@ -64,6 +64,20 @@ class RakeTasksTest < Minitest::Test
     previous.each { |key, value| ENV[key] = value }
   end
 
+  def test_composed_release_tasks_refuse_to_change_an_existing_publisher
+    in_project do |project|
+      existing = Rake::Task.define_task("release" => ["existing:guard"]) { flunk "Existing release must not run" }
+      actions = existing.actions.dup
+      prerequisites = existing.prerequisites.dup
+
+      assert_raises(RubyRepoKit::Error) { RubyRepoKit::RakeTasks.install_release(project: project) }
+      assert_equal actions, existing.actions
+      assert_equal prerequisites, existing.prerequisites
+      refute Rake::Task.task_defined?("release:artifact")
+      refute Rake::Task.task_defined?("release:verify")
+    end
+  end
+
   def test_artifact_verification_never_implicitly_builds
     in_project do |project|
       RubyRepoKit::RakeTasks.install(project: project)

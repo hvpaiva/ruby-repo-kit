@@ -10,10 +10,7 @@ module RubyRepoKit
     extend Rake::DSL
 
     def self.install(project:)
-      if Rake::Task.task_defined?("release")
-        raise Error,
-              "A release task already exists; remove competing release tooling before installing RubyRepoKit tasks"
-      end
+      install_release(project: project)
 
       desc "Validate local repository maintenance contracts"
       task "repo:check" do
@@ -43,11 +40,15 @@ module RubyRepoKit
         sh "bundle", "exec", "bundler-audit", "check", "--update"
       end
 
-      install_release(project: project)
       install_github(project)
     end
 
     def self.install_release(project:)
+      if Rake::Task.task_defined?("release")
+        raise Error,
+              "A release task already exists; remove competing release tooling before installing RubyRepoKit tasks"
+      end
+
       require_relative "release"
 
       desc "Verify the release tag, version and changelog"
