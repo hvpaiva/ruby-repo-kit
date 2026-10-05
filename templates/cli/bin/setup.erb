@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "rbconfig"
+
+Dir.chdir(File.expand_path("..", __dir__)) do
+  abort "Dependency installation failed" unless system(RbConfig.ruby, "-S", "bundle", "install")
+end

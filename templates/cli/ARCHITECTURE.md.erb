@@ -1,0 +1,25 @@
+# Architecture
+
+The executable loads the library and returns the CLI's exit status. The CLI uses
+OptionParser and accepts injected output streams so behavior can be tested
+without a real terminal. Version data has one source in
+lib/<%= @require_path %>/version.rb.
+
+The gemspec allows only runtime Ruby files, the executable and selected public
+documents into the package. It declares OptionParser as a runtime dependency.
+The maintenance toolkit, tests, linters and audit tool are development dependencies
+and are not required to run an installed copy of the CLI.
+
+The Rakefile delegates repository, package and release operations to ruby-repo-kit.
+The local .ruby-repo.yml declares project identity and the CI check names. CI
+jobs remain in this repository. Ruby lint rules inherit the versioned shared
+preset, with project-specific overrides in .rubocop.yml.
+
+There are no generated runtime artifacts initially. The generate and
+generate:check tasks deliberately have no work. When introducing a generated
+manual or similar artifact, implement these tasks and declare its paths in
+.ruby-repo.yml.
+
+The scaffold is a starting point. No process reapplies it over application code,
+tests or documentation. Dependency upgrades change shared maintenance behavior;
+changes to local integration files require review.

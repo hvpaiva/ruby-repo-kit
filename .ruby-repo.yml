@@ -1,0 +1,5 @@
+schema: 1
+name: ruby-repo-kit
+repository: hvpaiva/ruby-repo-kit
+version_file: lib/ruby_repo_kit/version.rb
+generated_paths: []

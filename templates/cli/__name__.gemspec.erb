@@ -1,0 +1,31 @@
+# frozen_string_literal: true
+
+require_relative "lib/<%= @require_path %>/version"
+
+Gem::Specification.new do |spec|
+  spec.name = <%= ruby_literal(@name) %>
+  spec.version = <%= @namespace %>::VERSION
+  spec.authors = [<%= ruby_literal(@author) %>]
+  spec.email = [<%= ruby_literal(@email) %>]
+  spec.summary = "A small command-line tool that prints text"
+  spec.description = "Prints positional arguments separated by spaces; includes help and version commands."
+  spec.homepage = "https://github.com/<%= @repository %>"
+  spec.license = "MIT"
+  spec.required_ruby_version = ">= 3.4"
+  spec.metadata = {
+    "source_code_uri" => spec.homepage,
+    "bug_tracker_uri" => "#{spec.homepage}/issues",
+    "changelog_uri" => "#{spec.homepage}/blob/main/CHANGELOG.md",
+    "documentation_uri" => "#{spec.homepage}#readme",
+    "rubygems_mfa_required" => "true",
+    "allowed_push_host" => "https://rubygems.org"
+  }
+  # Build from a source archive too; development infrastructure is not shipped.
+  spec.files = Dir.chdir(__dir__) do
+    Dir.glob("lib/**/*.rb") + %w[exe/<%= @name %> README.md CHANGELOG.md LICENSE.txt SECURITY.md]
+  end
+  spec.bindir = "exe"
+  spec.executables = [<%= ruby_literal(@name) %>]
+  spec.require_paths = ["lib"]
+  spec.add_dependency "optparse", ">= 0.6", "< 1"
+end

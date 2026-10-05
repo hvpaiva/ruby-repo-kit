@@ -1,0 +1,55 @@
+plugins:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+
+inherit_mode:
+  merge:
+    - Exclude
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.4
+  Exclude:
+    - vendor/**/*
+    - tmp/**/*
+    - pkg/**/*
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*
+    - Rakefile
+    - '*.gemspec'
+
+Metrics/MethodLength:
+  Max: 35
+
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
+Metrics/AbcSize:
+  Max: 46
+
+Metrics/CyclomaticComplexity:
+  Max: 18
+
+Metrics/PerceivedComplexity:
+  Max: 18
+
+Metrics/ClassLength:
+  Max: 180
+
+Minitest/MultipleAssertions:
+  Max: 12
+
+# Validation methods raise detailed errors on failure and return true on success.
+Naming/PredicateMethod:
+  AllowedMethods:
+    - verify!
+    - check

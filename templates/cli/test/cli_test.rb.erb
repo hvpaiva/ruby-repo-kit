@@ -1,0 +1,62 @@
+# frozen_string_literal: true
+
+require_relative "test_helper"
+
+class CLITest < Minitest::Test
+  def setup
+    @out = StringIO.new
+    @err = StringIO.new
+  end
+
+  def test_prints_text_without_changing_the_argument_array
+    arguments = %w[hello world]
+
+    assert_equal 0, run_cli(arguments)
+    assert_equal "hello world\n", @out.string
+    assert_empty @err.string
+    assert_equal %w[hello world], arguments
+  end
+
+  def test_help
+    assert_equal 0, run_cli(["--help"])
+    assert_includes @out.string, "Usage: <%= @name %>"
+    assert_empty @err.string
+  end
+
+  def test_version
+    assert_equal 0, run_cli(["--version"])
+    assert_equal "#{<%= @namespace %>::VERSION}\n", @out.string
+    assert_empty @err.string
+  end
+
+  def test_invalid_flag_uses_stderr
+    assert_equal 2, run_cli(["--not-an-option"])
+    assert_empty @out.string
+    assert_includes @err.string, "invalid option"
+  end
+
+  def test_missing_text_is_an_error
+    assert_equal 2, run_cli([])
+    assert_empty @out.string
+    assert_includes @err.string, "TEXT"
+  end
+
+  def test_option_separator_allows_text_beginning_with_a_dash
+    assert_equal 0, run_cli(["--", "--text"])
+    assert_equal "--text\n", @out.string
+  end
+
+  def test_a_closed_output_pipe_exits_cleanly
+    output = Object.new
+    def output.puts(*) = raise Errno::EPIPE
+
+    assert_equal 0, <%= @namespace %>::CLI.run(["hello"], out: output, err: @err)
+    assert_empty @err.string
+  end
+
+  private
+
+  def run_cli(arguments)
+    <%= @namespace %>::CLI.run(arguments, out: @out, err: @err)
+  end
+end

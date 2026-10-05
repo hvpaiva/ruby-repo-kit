@@ -1,0 +1,13 @@
+inherit_from: config/rubocop.yml
+
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*
+    - '*.gemspec'
+    - Rakefile
+
+AllCops:
+  Exclude:
+    - templates/**/*
+    - tmp/**/*
+    - vendor/**/*

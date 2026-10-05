@@ -1,0 +1,53 @@
+# <%= @name %>
+
+A small Ruby CLI that prints its text arguments separated by spaces.
+
+Requires Ruby 3.4 or newer. This initial implementation has no external service
+dependencies.
+
+## Usage
+
+    <%= @name %> hello world
+    <%= @name %> --help
+    <%= @name %> --version
+    <%= @name %> -- --text-starting-with-a-dash
+
+Successful output goes to stdout. Invalid options and missing text go to stderr
+with exit status 2. A closed output pipe exits cleanly.
+
+## Install from source
+
+    gem build <%= @name %>.gemspec
+    gem install ./<%= @name %>-0.1.0.gem
+
+This repository's creation does not publish the gem or reserve its name.
+After a release has actually been published, RubyGems installation is available:
+
+    gem install <%= @name %>
+
+## Development
+
+    bin/setup
+    bundle exec rake check
+    bundle exec rake audit
+
+Commit Gemfile.lock after dependency installation. It pins development tools;
+users installing the gem resolve the dependencies declared in its gemspec.
+The versioned ruby-repo-kit development dependency supplies repository and release
+operations. That gem version must be available from the configured source before
+contributors or hosted CI can install the development bundle.
+
+Local checks include Ruby linting, tests with coverage (90% lines, 80% branches),
+repository checks and installation of the built package.
+The separate audit task updates a vulnerability database and
+needs network access. CI additionally checks pull-request commits and exercises
+Ruby 3.4/4.0 on Linux and Ruby 4.0 on macOS. These are configured checks, not a
+claim that a new repository has already passed them.
+
+See [contributing](CONTRIBUTING.md), [architecture](ARCHITECTURE.md),
+[security](SECURITY.md), [conduct](CODE_OF_CONDUCT.md), and
+[release setup](docs/releasing.md).
+
+## License
+
+MIT. See [LICENSE.txt](LICENSE.txt).

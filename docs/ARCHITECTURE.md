@@ -1,0 +1,130 @@
+# Architecture and integration contract
+
+Ruby Repo Kit is one Ruby gem with separate internal components for generation,
+local checks, packaging, release and GitHub policy. Its CLI and Rake tasks are
+adapters. It has one scaffold profile: an executable Ruby gem.
+
+## Ownership and updates
+
+| Content | Owner | How it changes |
+| --- | --- | --- |
+| Application code, executable, tests, README and other product documents | Consumer | Normal project edits |
+| Release, packaging and repository-check algorithms | Toolkit | Dependency update |
+| Shared RuboCop baseline | Toolkit, with consumer overrides | Dependency update |
+| Consumer Rakefile, configuration and workflow YAML | Consumer | Reviewed integration edits |
+| GitHub repository settings | Repository administrator, under explicit toolkit policy | Plan, then explicit apply |
+| RubyGems trusted publisher | Gem owner | Separate RubyGems configuration |
+
+Generation copies the starting files once. There is no generic template reapply,
+merge engine, plugin registry or framework controlling the application.
+Introducing a library scaffold or separating packages requires a concrete
+consumer or dependency/versioning constraint.
+
+## Local project configuration
+
+The consumer's .ruby-repo.yml uses schema 1. A complete initial configuration is:
+
+    schema: 1
+    name: useful-cli
+    repository: your-account/useful-cli
+    version_file: lib/useful_cli/version.rb
+    gemspec: useful-cli.gemspec
+    changelog: CHANGELOG.md
+    generated_paths: []
+    generate_command: [bundle, exec, rake, generate]
+    check_command: [bundle, exec, rake, check]
+    required_checks:
+      - quality
+      - commits
+      - audit
+      - fresh-dependencies
+      - test (ubuntu-latest, 3.4)
+      - test (ubuntu-latest, 4.0)
+      - test (macos-latest, 4.0)
+    workflow: release.yml
+    environment: release
+
+Project.load rejects unknown settings and unsupported schemas. Paths are
+relative to the consumer root; paths escaping it through traversal or symlinks
+are rejected. Commands are argv arrays, not shell snippets. The schema describes
+one gem, one version source and one changelog per consumer repository.
+
+The generated_paths list names project-owned artifacts refreshed during release
+preparation. It does not mark files for template updates. A newly generated CLI
+has no such artifacts; its generation tasks have no work until the project
+introduces them.
+
+## Ruby and Rake adapters
+
+Install tasks explicitly in the consumer Rakefile:
+
+    require "ruby_repo_kit"
+    require "ruby_repo_kit/rake_tasks"
+
+    RubyRepoKit::RakeTasks.install(
+      project: RubyRepoKit::Project.load(root: __dir__)
+    )
+
+This provides build, package:check, repo:check, lint:commits, audit, release
+tasks and GitHub policy tasks. It rejects a competing existing release task.
+The consumer defines its own test, coverage, lint, generate and combined check
+tasks. Do not also load another tool's publishing tasks under the same names.
+
+The CLI entry point is:
+
+    RubyRepoKit::CLI.run(argv, root: project_root, out: stdout, err: stderr)
+
+It returns 0 for success, 2 for command-line usage errors and 1 for toolkit
+operational errors. Thin local wrappers delegate arguments and root to it.
+Internal service classes may evolve; use the CLI and Rake adapters for ordinary
+consumer integration.
+
+## Components
+
+- Project validates configuration and resolves paths from the consumer root.
+- Commands runs explicit argv arrays with the consumer working directory.
+- Scaffold renders packaged ERB files into an exclusively created directory.
+- Checks inspects local metadata, files, runtime/development boundaries and lint
+  integration. It does not run the full quality suite.
+- Package builds, installs and smoke-tests the artifact outside its checkout.
+- Release separates metadata, preparation/recovery, PR workflow, publication
+  state, artifact verification and the guarded publishing operation.
+- GitHub separates HTTP access, the initial repository policy and reconciliation.
+
+Gemspec inspection runs in a separate interpreter to avoid stale version constants
+after a bump. Isolation does not make project Ruby code untrusted-safe; these
+files are part of the consumer's trusted development environment.
+
+## Release and artifact identity
+
+Preparation changes only declared release files and rejects unrelated changes.
+The workflow targets a matching release PR, checks the expected commit, and tags
+its merge commit. Retries inspect prior progress rather than replacing tags or
+unconditionally publishing again.
+
+The hosted release pipeline builds one gem and records metadata, release notes
+and SHA-256. Package checks consume that artifact. Later jobs download the same
+artifact, verify its checksum against the verify job's output and use it for
+attestation, RubyGems publication and GitHub release assets.
+
+The release environment and OIDC publisher are external configuration. A dry-run
+checks build and verification; successful OIDC publication requires an actual
+hosted publishing run and separate recorded evidence.
+
+## Self-hosting and the canary
+
+The toolkit's Gemfile uses its local gemspec, and its Rakefile requires its own
+task implementation. It does not need a released copy of itself to run its
+development checks or build an artifact.
+
+The dedicated canary consumes an installed toolkit artifact to exercise packaging,
+templates, runtime independence and upgrade behavior. Path dependencies alone
+cannot prove those properties. Its external CI/publication gates remain distinct
+from local tests; consult [current status](STATUS.md) and [the plan](PLAN.md).
+
+## Attribution
+
+Release infrastructure adapts code from Slipway and Rich-RI, Copyright (c) 2026
+Highlander Paiva, under the MIT license retained in this repository. The
+architecture consolidates their reusable practices without importing either
+application's runtime implementation.

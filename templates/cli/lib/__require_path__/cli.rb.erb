@@ -1,0 +1,50 @@
+# frozen_string_literal: true
+
+require "optparse"
+
+require_relative "version"
+
+module <%= @namespace %>
+  class CLI
+    def self.run(argv, out: $stdout, err: $stderr)
+      new(out: out, err: err).run(argv)
+    end
+
+    def initialize(out:, err:)
+      @out = out
+      @err = err
+    end
+
+    def run(argv)
+      arguments = argv.dup
+      requested = nil
+      parser = OptionParser.new do |options|
+        options.banner = "Usage: <%= @name %> [options] TEXT..."
+        options.separator ""
+        options.separator "Print text, separating arguments with spaces."
+        options.on("-h", "--help", "Show this help") { requested = :help }
+        options.on("-v", "--version", "Show the version") { requested = :version }
+      end
+      parser.parse!(arguments)
+      return print_result(parser.to_s) if requested == :help
+      return print_result(VERSION) if requested == :version
+
+      raise OptionParser::MissingArgument, "TEXT (see --help)" if arguments.empty?
+
+      print_result(arguments.join(" "))
+    rescue OptionParser::ParseError => e
+      @err.puts "<%= @name %>: #{e.message}"
+      2
+    rescue Errno::EPIPE
+      0
+    end
+
+    private
+
+    def print_result(value)
+      @out.puts value
+      @out.flush
+      0
+    end
+  end
+end

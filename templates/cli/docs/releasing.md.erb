@@ -1,0 +1,42 @@
+# Release setup and operation
+
+The scaffold does not create a GitHub repository, rulesets, environments, labels
+or RubyGems publisher. It does not reserve a public gem name or publish anything.
+The configured repository identity is <%= @repository %>.
+
+Before the first release:
+
+1. Confirm the repository and public gem name.
+2. Make the configured ruby-repo-kit version available to hosted dependency
+   installation and commit the generated Gemfile.lock.
+3. Push the repository and confirm every configured CI job passes.
+4. Configure branch protection or a ruleset using the required_checks values in
+   .ruby-repo.yml. Create the skip-changelog label if using that workflow.
+5. Create the GitHub release environment and its intended protection rules.
+6. Configure a RubyGems pending trusted publisher for this gem, repository,
+   release.yml workflow and release environment. For an existing gem, configure
+   its trusted publisher instead. No long-lived RubyGems API token is required.
+7. Run the Release workflow manually with dry_run enabled and inspect its
+   checks, package, digest and provenance before publishing.
+
+The toolkit's release CLI exposes preparation, PR and recovery operations:
+
+    bin/release --help
+
+Use its help for the installed version's commands and options. A protected
+release is prepared and reviewed before an immutable version tag is pushed.
+Do not push a release tag as an experiment: a matching tag authorizes publication
+once the hosted publisher is configured.
+
+The Release workflow runs CI, builds one artifact, tests that artifact and
+records its SHA-256 digest. Attestation, RubyGems publication and the GitHub
+release consume that same downloaded artifact, checking its digest again.
+The publish job uses OIDC credentials in the release environment. A branch
+dry-run builds and verifies without publishing.
+
+If a run stops after publishing, inspect both RubyGems and GitHub before retrying.
+Never move a published tag or replace a published gem version. Preserve the
+original artifact and use the toolkit's recovery diagnostics.
+
+Local package tests and a hosted dry-run do not prove RubyGems authentication.
+Record the actual successful publication and installation separately.

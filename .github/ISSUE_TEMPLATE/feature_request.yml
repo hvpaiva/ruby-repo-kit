@@ -1,0 +1,13 @@
+name: Feature request
+description: Explain a problem the CLI could solve
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and current workaround
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior and alternatives
