@@ -1,5 +1,9 @@
 # Local packaged-toolkit upgrade evidence
 
+This is the earlier local rehearsal. Later verification uses actual published
+packages in [PUBLISHED_UPGRADE_RECOVERY.md](PUBLISHED_UPGRADE_RECOVERY.md) and
+real hosted publication recovery in [CYCLE_0_1_1.md](CYCLE_0_1_1.md).
+
 Observed on 2026-10-04 at 22:02:25–22:02:31 America/Sao_Paulo
 (2026-10-05 01:02 UTC), using Ruby 4.0.7 on x86_64 Linux and Bundler 4.0.22.
 

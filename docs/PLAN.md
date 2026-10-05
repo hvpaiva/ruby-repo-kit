@@ -36,14 +36,17 @@ dependency updates. Preserve project-owned code and intentional differences.
 
 ## P3 — Hosted canary acceptance
 
-Current evidence: G3 passed on the corrected canary release candidate. Both
-toolkit and canary 0.1.0 were actually published through their own trusted
-publishers; downloaded bytes, attestations and installed behavior were verified.
-See evidence/PUBLICATION.md and evidence/CANARY.md. G4 remains open for toolkit
-0.1.1, its adoption by the canary, and the second real release/recovery cycle.
-First-publication defects found by the canary are fixed in toolkit PR #5; small
-compatibility adapters are being prepared before 0.1.1. No new user account step
-is pending, and existing products remain read-only.
+Completed: G3 passed on the corrected canary release candidate. Toolkit and
+canary 0.1.0 and 0.1.1 were actually published through their own trusted
+publishers. The canary adopted published toolkit 0.1.1 through a protected PR
+without copied implementation or application changes. Its second publication
+recovered from an intentionally failed terminal GitHub Release job after RubyGems
+success, retrying only that job. Exact artifact identity, provenance, isolated
+installed behavior and completed-command replay passed. G4 is closed; see
+[evidence/CYCLE_0_1_1.md](evidence/CYCLE_0_1_1.md) and the separate
+[published-package local experiment](evidence/PUBLISHED_UPGRADE_RECOVERY.md).
+No new user account step is pending. Proceed to P4 only after reviewing this
+evidence and recapturing each existing repository's current baseline.
 
 - Set final names before creating public repositories or publishing immutable gems.
 - Review workflow, rulesets, environment and publisher configuration concretely.

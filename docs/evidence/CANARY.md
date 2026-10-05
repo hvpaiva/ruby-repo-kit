@@ -1,8 +1,9 @@
 # Canary hosted acceptance evidence
 
 Recorded 2026-10-04 America/Sao_Paulo (2026-10-05 UTC). G3 passed for the corrected
-candidate and the first real canary publication is verified below. G4 remains
-partial until the subsequent actual update/release/recovery evidence is complete.
+candidate and the first real canary publication is verified below. G4 was partial
+at this milestone; the subsequent actual update and hosted recovery are recorded
+in [CYCLE_0_1_1.md](CYCLE_0_1_1.md).
 
 ## Initial successful CI and branch rehearsal
 
@@ -158,12 +159,12 @@ from a partially failed hosted publish. The earlier failure-injection evidence
 in RECOVERY.md concerns local preparation with a temporary remote and remains
 separate.
 
-## Remaining G4 evidence
+## G4 continuation after this milestone
 
 First toolkit and canary publications are now verified through their respective
 trusted publishers with exact artifact identity and installed behavior. G3 is
-closed. G4 remains open for the subsequent real toolkit 0.1.1/consumer adoption
-and release/recovery cycle. The local version-only update and simulated remote
+closed. G4 remained open for the subsequent real toolkit 0.1.1/consumer adoption
+and release/recovery cycle, now recorded in [CYCLE_0_1_1.md](CYCLE_0_1_1.md). The local version-only update and simulated remote
 recovery remain useful prior evidence, but do not replace that hosted cycle.
 No new account setup is required from the user. Slipway and Rich-RI remain
 read-only until the remaining gates have passed and their current baselines are

@@ -4,8 +4,9 @@ Observed 2026-10-04 America/Sao_Paulo (2026-10-05 UTC). This evidence covers the
 toolkit's first hosted CI and unpublished rehearsal artifact. The subsequent
 actual toolkit 0.1.0 publication is recorded separately in
 [PUBLICATION.md](PUBLICATION.md). Subsequent canary evidence is in
-[CANARY.md](CANARY.md): G3 passed and first publication is verified, while G4
-remains partial. Neither toolkit result alone authorizes migrating Slipway or Rich-RI.
+[CANARY.md](CANARY.md): G3 and first publication passed. The subsequent actual
+0.1.1 update and hosted recovery are recorded in [CYCLE_0_1_1.md](CYCLE_0_1_1.md).
+Neither toolkit result alone authorizes migrating Slipway or Rich-RI.
 
 ## Toolkit CI
 
@@ -103,7 +104,7 @@ tests. There are two distinct observed causes:
 source was changed to make these checks appear successful. After toolkit 0.1.0
 publication, canary PR #1 completed the checksums and passed hosted CI. The
 corrected release candidate subsequently passed G3 and its own first actual
-publication; see CANARY.md for those distinct source identities. G4 still requires
-the subsequent actual update/release/recovery evidence described in
-[PLAN.md](../PLAN.md), or an explicit user-approved substitute. The historical
-toolkit rehearsal and local upgrade/recovery rehearsals do not replace that cycle.
+publication; see CANARY.md for those distinct source identities. At that point G4
+still required a subsequent actual update/release/recovery cycle. That cycle is
+now recorded separately in [CYCLE_0_1_1.md](CYCLE_0_1_1.md); this historical toolkit
+rehearsal and local rehearsals remain distinct evidence.

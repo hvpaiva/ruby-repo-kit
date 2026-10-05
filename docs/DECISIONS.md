@@ -26,14 +26,19 @@
     [PUBLICATION.md](evidence/PUBLICATION.md). Canary acceptance remains separate.
 13. Canary G3 passed on the corrected, prepared release candidate. Its actual
     0.1.0 publication also passed independent artifact/provenance/installation
-    verification; see [CANARY.md](evidence/CANARY.md). G4 remains partial until the
-    subsequent real update/release/recovery cycle. No user account step remains.
+    verification; see [CANARY.md](evidence/CANARY.md). No user account step remains.
+14. G4 passed the subsequent real 0.1.1 cycle: published toolkit dependency update,
+    OIDC publication, scoped recovery after RubyGems success/GitHub Release failure,
+    unchanged tag/artifact/registry identity and installed behavior. See
+    [CYCLE_0_1_1.md](evidence/CYCLE_0_1_1.md). Recovery retries the terminal job only;
+    it does not retry a successful or uncertain RubyGems push.
 
 ## Pending
 
-- Subsequent actual toolkit/consumer update, release and recovery evidence before
-  migrating either existing product. The next toolkit version is 0.1.1; see
-  STATUS.md gate G4 and PLAN.md. Existing repository baselines must be recaptured.
+- G5: recapture each existing repository's baseline, review G1–G4 evidence, then
+  prepare isolated adoption PRs preserving application/package/CI/release contracts.
+  Rich-RI has changed independently since the original audit; never reuse its old
+  baseline as current evidence. See STATUS.md and PLAN.md.
 
 ## Investigation references
 
