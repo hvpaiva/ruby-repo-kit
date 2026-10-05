@@ -34,6 +34,7 @@ module RubyRepoKit
         cache_dependencies(dir)
         Bundler.with_unbundled_env do
           env = environment.merge("GEM_HOME" => home, "GEM_PATH" => home, "RUBYOPT" => nil, "RUBYLIB" => nil,
+                                  "BUNDLER_SETUP" => nil, "RUBYGEMS_GEMDEPS" => nil,
                                   "XDG_CONFIG_HOME" => File.join(dir, "config"), "NO_COLOR" => "1")
           # GEM_HOME selects the destination. --install-dir would make RubyGems
           # ignore installed specifications, including Ruby's uncached default gems.

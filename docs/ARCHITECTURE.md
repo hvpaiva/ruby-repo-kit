@@ -103,8 +103,11 @@ APIs in addition to CLI.run and RakeTasks.install:
   check(artifact: nil, environment: {}) provide shared packaging with local smoke
   assertions. An explicit artifact is verified and installed without rebuilding.
 
-These named interfaces follow the repository's version compatibility policy;
-other internal service APIs remain implementation details. Consumers can keep
+Patches within a 0.MINOR series preserve these documented interfaces. A breaking
+integration change requires a minor version, release notes and migration guidance.
+Corrections may reject invalid configurations that earlier patches accepted.
+Template updates affect new projects and do not rewrite existing consumers.
+Other internal service APIs remain implementation details. Consumers can keep
 their current commit checks, CI orchestration and domain-specific smoke checks.
 For example, after requiring ruby_repo_kit/package and ruby_repo_kit/rake_tasks:
 
@@ -125,10 +128,12 @@ The environment mapping applies to installation and the generic --version/--help
 smoke before the block runs. Keys must be environment variable names and values
 strings without NUL or nil; nil removes a variable from child processes. The
 mapping does not modify the caller's ENV or the supplied hash. Package-owned
-GEM_HOME, GEM_PATH, RUBYOPT, RUBYLIB, XDG_CONFIG_HOME and NO_COLOR override any
-supplied values, preserving package isolation. The block receives that effective
-environment, the installed gem home and the temporary working directory; those
-directories exist only for the block's lifetime. A failed assertion must raise.
+GEM_HOME, GEM_PATH, RUBYOPT, RUBYLIB, BUNDLER_SETUP, RUBYGEMS_GEMDEPS,
+XDG_CONFIG_HOME and NO_COLOR override any supplied values, preserving package
+isolation and disabling RubyGems/Bundler automatic dependency activation.
+The block receives that effective environment, the installed gem home and the
+temporary working directory. Those directories exist only for the block's
+lifetime. A failed assertion must raise.
 
 For repositories whose historical policy protects only main and does not require
 thread resolution, the complete policy override is local data:
