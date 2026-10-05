@@ -38,9 +38,12 @@ that both entries exist is enough to resume the publication gate.
 
 1. Toolkit protected PR checks and the nonpublishing Release rehearsal passed;
    consult docs/evidence/HOSTED.md for exact identities and limits.
-2. Commit any remaining evidence/changes through the protected PR workflow.
-3. Prepare toolkit 0.1.0 with the shared release command. Review the release PR,
-   then merge and sign the exact merge SHA through that command.
+2. Evidence and the recovery script were committed through protected PR #2.
+3. Toolkit 0.1.0 is prepared in [release PR #3](https://github.com/hvpaiva/ruby-repo-kit/pull/3)
+   using the shared command. Require all checks on its latest head and the pending
+   publisher registration above, then resume
+   `bundle exec ruby-repo-kit release 0.1.0 --push`. The command merges and signs
+   the exact release merge SHA; no tag has been created yet.
 4. Verify actual toolkit OIDC publication, GitHub release and the downloaded gem's
    identity/digest. A green branch rehearsal cannot substitute for this step.
 5. In the canary, resolve against the published toolkit and run

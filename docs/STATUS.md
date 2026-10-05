@@ -7,6 +7,22 @@ Updated: 2026-10-04 (America/Sao_Paulo).
 P3: local toolkit/canary gates passed; complete hosted bootstrap and publication.
 The existing product repositories have NOT been migrated.
 
+## Immediate continuation
+
+The first toolkit release is prepared in
+https://github.com/hvpaiva/ruby-repo-kit/pull/3 (`release/v0.1.0`). The toolkit's
+own command performed real policy verification, preparation, full checks, signed
+commit, branch push and PR creation. No tag, merge of this release PR, or gem push
+has occurred. Its initial release commit is c750c7b6e13337bb12ea6f2c2540228560b68550;
+this handoff is a separate documentation commit on that PR.
+
+Before publishing, require the latest PR head's seven checks and confirmation that
+the two RubyGems pending publishers in PUBLISHING_SETUP.md exist. Then resume with
+`bundle exec ruby-repo-kit release 0.1.0 --push`; the engine rechecks PR/tag state.
+Do not manually tag current main or bypass protected checks. RubyGems account
+setup is the remaining user action; the plan is not waiting for new architecture
+or naming approval. If registration is still unavailable, keep G3/G4 open.
+
 ## User authorization and constraints
 
 User authorized the full implementation following the investigation, but changed
@@ -56,7 +72,8 @@ gem install and corrupted-artifact rejection passed. Gemspec inspection now runs
 in a child process to avoid stale VERSION constants after a version bump.
 Release, GitHub/checks, commits, shared lint and generator are now implemented.
 Integrated run: 103 tests / 558 assertions, zero failures/errors/skips; RuboCop
-41 files clean; repo:check and release:verify passed. Coverage 94.85% lines / 83.51%
+43 files clean after adding the rehearsal scripts; repo:check and release:verify
+passed. Coverage 94.85% lines / 83.51%
 branches; enforcing 90%/80%. Full `bundle exec rake check release:verify` passed.
 Independent toolkit package installation passed after explicit optparse dependency
 and default-gem isolation correction. `--install-dir` made RubyGems ignore default
