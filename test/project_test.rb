@@ -21,6 +21,27 @@ class ProjectTest < Minitest::Test
     assert_raises(RubyRepoKit::Error) { in_project("repository" => "--repo=other") { flunk } }
   end
 
+  def test_github_policy_choices_default_to_enabled_and_accept_explicit_false
+    in_project do |project|
+      assert project.protect_hotfix_branches
+      assert project.require_review_thread_resolution
+    end
+    in_project("protect_hotfix_branches" => false, "require_review_thread_resolution" => false) do |project|
+      refute project.protect_hotfix_branches
+      refute project.require_review_thread_resolution
+    end
+  end
+
+  def test_github_policy_choices_require_real_booleans
+    invalid = [nil, "false", "true", 0, 1, [], {}]
+    %w[protect_hotfix_branches require_review_thread_resolution].each do |key|
+      invalid.each do |value|
+        error = assert_raises(RubyRepoKit::Error) { in_project(key => value) { flunk } }
+        assert_includes error.message, "#{key} must be true or false"
+      end
+    end
+  end
+
   def test_rejects_paths_outside_root_and_shell_string_commands
     ["../secret", "/tmp/secret", "a/../secret", "./version.rb", "a\0b"].each do |path|
       assert_raises(RubyRepoKit::Error) { in_project("version_file" => path) { flunk } }

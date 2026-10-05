@@ -43,11 +43,22 @@ The consumer's .ruby-repo.yml uses schema 1. A complete initial configuration is
       - test (macos-latest, 4.0)
     workflow: release.yml
     environment: release
+    protect_hotfix_branches: true
+    require_review_thread_resolution: true
 
 Project.load rejects unknown settings and unsupported schemas. Paths are
 relative to the consumer root; paths escaping it through traversal or symlinks
 are rejected. Commands are argv arrays, not shell snippets. The schema describes
 one gem, one version source and one changelog per consumer repository.
+
+The two policy settings accept only YAML booleans and default to true. Setting
+protect_hotfix_branches to false keeps the managed branch ruleset limited to
+main; otherwise it also protects hotfix/*. Setting
+require_review_thread_resolution to false preserves a repository policy that
+allows merging with unresolved review threads. These choices do not change
+signature, required-check, merge-method or tag protections, or the release
+engine's allowed base branches. Set them explicitly when preserving an existing
+repository policy. CLI, Rake and release preflight all read the same configuration.
 
 The generated_paths list names project-owned artifacts refreshed during release
 preparation. It does not mark files for template updates. A newly generated CLI
@@ -78,6 +89,63 @@ It returns 0 for success, 2 for command-line usage errors and 1 for toolkit
 operational errors. Thin local wrappers delegate arguments and root to it.
 Internal service classes may evolve; use the CLI and Rake adapters for ordinary
 consumer integration.
+
+### Supported composition for existing consumers
+
+From 0.1.1, the following Ruby entry points are supported consumer integration
+APIs in addition to CLI.run and RakeTasks.install:
+
+- RakeTasks.install_release(project:) registers the release verification,
+  artifact and publication tasks. Define build separately and remove competing
+  release tasks, including files Rake auto-loads from rakelib. This method does
+  not register package, commit-policy, audit or GitHub tasks.
+- Package.new(project:, out: $stdout), build(output: nil), and
+  check(artifact: nil, environment: {}) provide shared packaging with local smoke
+  assertions. An explicit artifact is verified and installed without rebuilding.
+
+Patches within a 0.MINOR series preserve these documented interfaces. A breaking
+integration change requires a minor version, release notes and migration guidance.
+Corrections may reject invalid configurations that earlier patches accepted.
+Template updates affect new projects and do not rewrite existing consumers.
+Other internal service APIs remain implementation details. Consumers can keep
+their current commit checks, CI orchestration and domain-specific smoke checks.
+For example, after requiring ruby_repo_kit/package and ruby_repo_kit/rake_tasks:
+
+```ruby
+project = RubyRepoKit::Project.load(root: __dir__)
+package = RubyRepoKit::Package.new(project: project)
+RubyRepoKit::RakeTasks.install_release(project: project)
+task(:build) { package.build }
+task "package:check", [:artifact] do |_task, args|
+  package.check(artifact: args[:artifact], environment: { "RI" => nil, "PAGER" => "cat" }) do |env, home, directory|
+    InstalledSmoke.new(env: env, gem_home: home, directory: directory).run
+  end
+end
+```
+
+InstalledSmoke is the consumer's own assertion object, not a toolkit component.
+The environment mapping applies to installation and the generic --version/--help
+smoke before the block runs. Keys must be environment variable names and values
+strings without NUL or nil; nil removes a variable from child processes. The
+mapping does not modify the caller's ENV or the supplied hash. Package-owned
+GEM_HOME, GEM_PATH, RUBYOPT, RUBYLIB, BUNDLER_SETUP, RUBYGEMS_GEMDEPS,
+XDG_CONFIG_HOME and NO_COLOR override any supplied values, preserving package
+isolation and disabling RubyGems/Bundler automatic dependency activation.
+The block receives that effective environment, the installed gem home and the
+temporary working directory. Those directories exist only for the block's
+lifetime. A failed assertion must raise.
+
+For repositories whose historical policy protects only main and does not require
+thread resolution, the complete policy override is local data:
+
+```yaml
+protect_hotfix_branches: false
+require_review_thread_resolution: false
+```
+
+The canonical github plan/verify/apply and release commands use those values,
+including the command printed for recovery. No alternative policy implementation
+or hidden wrapper configuration is necessary.
 
 ## Components
 

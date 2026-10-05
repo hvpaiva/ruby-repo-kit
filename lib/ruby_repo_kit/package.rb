@@ -25,15 +25,17 @@ module RubyRepoKit
       target
     end
 
-    def check(artifact: nil)
+    def check(artifact: nil, environment: {})
+      environment = validated_environment(environment)
       Dir.mktmpdir("ruby-repo-package-") do |dir|
         package = artifact ? File.expand_path(artifact, @project.root) : build(output: File.join(dir, "package.gem"))
         spec = verify(package)
         home = File.join(dir, "gems")
         cache_dependencies(dir)
         Bundler.with_unbundled_env do
-          env = { "GEM_HOME" => home, "GEM_PATH" => home, "RUBYOPT" => nil, "RUBYLIB" => nil,
-                  "XDG_CONFIG_HOME" => File.join(dir, "config"), "NO_COLOR" => "1" }
+          env = environment.merge("GEM_HOME" => home, "GEM_PATH" => home, "RUBYOPT" => nil, "RUBYLIB" => nil,
+                                  "BUNDLER_SETUP" => nil, "RUBYGEMS_GEMDEPS" => nil,
+                                  "XDG_CONFIG_HOME" => File.join(dir, "config"), "NO_COLOR" => "1")
           # GEM_HOME selects the destination. --install-dir would make RubyGems
           # ignore installed specifications, including Ruby's uncached default gems.
           execute(env, [*gem_command, "install", "--local", "--no-document", "--norc",
@@ -69,6 +71,16 @@ module RubyRepoKit
     end
 
     private
+
+    def validated_environment(environment)
+      valid = environment.is_a?(Hash) && environment.all? do |key, value|
+        key.is_a?(String) && key.match?(/\A[A-Za-z_][A-Za-z0-9_]*\z/) &&
+          (value.nil? || (value.is_a?(String) && !value.include?("\0")))
+      end
+      raise Error, "Package environment must map variable names to strings or nil" unless valid
+
+      environment.to_h { |key, value| [key.dup, value&.dup] }
+    end
 
     def specification
       spec = Specification.load(project: @project)

@@ -21,12 +21,13 @@ module RubyRepoKit
       def main_ruleset
         {
           "name" => "main", "target" => "branch", "enforcement" => "active", "bypass_actors" => [],
-          "conditions" => { "ref_name" => { "include" => %w[refs/heads/main refs/heads/hotfix/*], "exclude" => [] } },
+          "conditions" => { "ref_name" => { "include" => protected_branches, "exclude" => [] } },
           "rules" => [
             { "type" => "pull_request", "parameters" => {
               "required_approving_review_count" => 0, "dismiss_stale_reviews_on_push" => false,
               "require_code_owner_review" => false, "require_last_push_approval" => false,
-              "required_review_thread_resolution" => true, "allowed_merge_methods" => ["merge"]
+              "required_review_thread_resolution" => @project.require_review_thread_resolution,
+              "allowed_merge_methods" => ["merge"]
             } },
             { "type" => "required_status_checks", "parameters" => {
               "strict_required_status_checks_policy" => true, "do_not_enforce_on_create" => false,
@@ -46,6 +47,14 @@ module RubyRepoKit
           "conditions" => { "ref_name" => { "include" => ["refs/tags/v*"], "exclude" => [] } },
           "rules" => %w[creation update deletion].map { |type| { "type" => type } }
         }
+      end
+
+      private
+
+      def protected_branches
+        ["refs/heads/main"].tap do |branches|
+          branches << "refs/heads/hotfix/*" if @project.protect_hotfix_branches
+        end
       end
     end
   end
