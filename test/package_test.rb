@@ -144,4 +144,61 @@ class PackageTest < Minitest::Test
       refute_path_exists project.path("pkg")
     end
   end
+
+  def test_application_environment_is_applied_before_default_smoke_and_forwarded_to_callback
+    previous = ENV.fetch("KIT_PACKAGE_CONFIG", nil)
+    ENV["KIT_PACKAGE_CONFIG"] = "invalid"
+    in_project do |project|
+      write_gem(project)
+      executable = project.path("exe/sample-cli")
+      guard = "abort 'Invalid application configuration' unless ENV['KIT_PACKAGE_CONFIG'] == 'valid'\n"
+      File.write(executable, File.read(executable).sub("require 'sample_cli'", "#{guard}require 'sample_cli'"))
+      package = RubyRepoKit::Package.new(project: project, out: StringIO.new)
+      artifact = package.build
+      error = assert_raises(RubyRepoKit::Error) { package.check(artifact: artifact) }
+      assert_includes error.message, "Invalid application configuration"
+
+      overrides = { "KIT_PACKAGE_CONFIG" => "valid", "KIT_PACKAGE_UNUSED" => nil, "PAGER" => "cat" }.freeze
+      package.check(artifact: artifact, environment: overrides) do |environment, _home, _directory|
+        assert_equal "valid", environment.fetch("KIT_PACKAGE_CONFIG")
+        assert_nil environment.fetch("KIT_PACKAGE_UNUSED")
+        assert_equal "cat", environment.fetch("PAGER")
+      end
+      assert_equal "invalid", ENV.fetch("KIT_PACKAGE_CONFIG")
+      assert_equal({ "KIT_PACKAGE_CONFIG" => "valid", "KIT_PACKAGE_UNUSED" => nil, "PAGER" => "cat" }, overrides)
+    end
+  ensure
+    ENV["KIT_PACKAGE_CONFIG"] = previous
+  end
+
+  def test_application_overrides_cannot_replace_package_isolation
+    in_project do |project|
+      write_gem(project)
+      overrides = %w[GEM_HOME GEM_PATH RUBYOPT RUBYLIB XDG_CONFIG_HOME NO_COLOR].to_h { |key| [key, "untrusted"] }
+      original = overrides.dup
+      package = RubyRepoKit::Package.new(project: project, out: StringIO.new)
+      package.check(environment: overrides) do |environment, home, directory|
+        assert_equal home, environment.fetch("GEM_HOME")
+        assert_equal home, environment.fetch("GEM_PATH")
+        assert_nil environment.fetch("RUBYOPT")
+        assert_nil environment.fetch("RUBYLIB")
+        assert_equal File.join(directory, "config"), environment.fetch("XDG_CONFIG_HOME")
+        assert_equal "1", environment.fetch("NO_COLOR")
+      end
+      assert_equal original, overrides
+    end
+  end
+
+  def test_invalid_package_environment_is_rejected_before_building
+    invalid = [nil, [], { "" => "x" }, { "BAD=NAME" => "x" }, { "BAD\0NAME" => "x" },
+               { name: "x" }, { "NAME" => false }, { "NAME" => 1 }, { "NAME" => "a\0b" }]
+    in_project do |project|
+      package = RubyRepoKit::Package.new(project: project, out: StringIO.new)
+      invalid.each do |environment|
+        error = assert_raises(RubyRepoKit::Error) { package.check(environment: environment) }
+        assert_includes error.message, "Package environment must map"
+      end
+      refute_path_exists project.path("pkg")
+    end
+  end
 end

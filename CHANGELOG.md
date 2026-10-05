@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Added
+
+- Preserve consumer package smoke checks with application environment overrides while keeping isolated gem loading.
+- Configure hotfix-branch protection and required review-thread resolution without replacing the shared GitHub policy engine.
+- Document supported release-task and packaging APIs for existing repositories with their own maintenance tasks.
+
 ## [0.1.0] - 2026-10-05
 
 ### Added

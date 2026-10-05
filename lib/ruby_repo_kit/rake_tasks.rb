@@ -43,11 +43,11 @@ module RubyRepoKit
         sh "bundle", "exec", "bundler-audit", "check", "--update"
       end
 
-      install_release(project)
+      install_release(project: project)
       install_github(project)
     end
 
-    def self.install_release(project)
+    def self.install_release(project:)
       require_relative "release"
 
       desc "Verify the release tag, version and changelog"

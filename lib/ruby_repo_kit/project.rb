@@ -10,10 +10,11 @@ module RubyRepoKit
     DEFAULT_CHECKS = ["quality", "commits", "audit", "fresh-dependencies", "test (ubuntu-latest, 3.4)",
                       "test (ubuntu-latest, 4.0)", "test (macos-latest, 4.0)"].freeze
     KEYS = %w[schema name repository version_file gemspec changelog generated_paths
-              generate_command check_command required_checks workflow environment].freeze
+              generate_command check_command required_checks workflow environment
+              protect_hotfix_branches require_review_thread_resolution].freeze
     attr_reader :root, :name, :repository, :version_file, :gemspec, :changelog,
                 :generated_paths, :generate_command, :check_command, :required_checks,
-                :workflow, :environment
+                :workflow, :environment, :protect_hotfix_branches, :require_review_thread_resolution
 
     def self.load(root: Dir.pwd)
       source = File.join(root, CONFIG_FILE)
@@ -25,9 +26,7 @@ module RubyRepoKit
     end
 
     def initialize(root:, settings:)
-      raise Error, "Project configuration must be a mapping" unless settings.is_a?(Hash)
-      raise Error, "Unknown project settings: #{settings.keys - KEYS}" unless (settings.keys - KEYS).empty?
-      raise Error, "Unsupported configuration schema (expected 1)" unless settings.fetch("schema", nil) == 1
+      validate_settings(settings)
 
       @root = File.realpath(root).freeze
       @name = identifier(settings["name"], /\A[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*\z/, "gem name")
@@ -43,6 +42,8 @@ module RubyRepoKit
       @workflow = identifier(settings.fetch("workflow", "release.yml"), /\A[a-zA-Z0-9_-]+\.ya?ml\z/,
                              "workflow filename")
       @environment = identifier(settings.fetch("environment", "release"), /\A[a-zA-Z0-9_-]+\z/, "environment")
+      @protect_hotfix_branches = boolean_setting(settings, "protect_hotfix_branches")
+      @require_review_thread_resolution = boolean_setting(settings, "require_review_thread_resolution")
       freeze
     end
 
@@ -66,6 +67,19 @@ module RubyRepoKit
     end
 
     private
+
+    def validate_settings(settings)
+      raise Error, "Project configuration must be a mapping" unless settings.is_a?(Hash)
+      raise Error, "Unknown project settings: #{settings.keys - KEYS}" unless (settings.keys - KEYS).empty?
+      raise Error, "Unsupported configuration schema (expected 1)" unless settings.fetch("schema", nil) == 1
+    end
+
+    def boolean_setting(settings, name)
+      value = settings.fetch(name, true)
+      raise Error, "#{name} must be true or false" unless [true, false].include?(value)
+
+      value
+    end
 
     def identifier(value, pattern, description)
       raise Error, "Invalid #{description}: #{value.inspect}" unless value.is_a?(String) && pattern.match?(value)

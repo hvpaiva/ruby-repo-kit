@@ -92,7 +92,43 @@ class GitHubTest < Minitest::Test
       assert_equal [15_368], checks.map { |check| check["integration_id"] }.uniq
       assert_equal %w[refs/heads/main refs/heads/hotfix/*], policy.main_ruleset.dig("conditions", "ref_name", "include")
       assert_includes rules.map { |rule| rule["type"] }, "required_signatures"
+      assert rules.find { |rule| rule["type"] == "pull_request" }.dig("parameters", "required_review_thread_resolution")
       assert_equal(%w[creation update deletion], policy.tags_ruleset["rules"].map { |rule| rule["type"] })
+    end
+  end
+
+  def test_project_policy_preserves_main_only_protection_and_optional_thread_resolution
+    in_project("protect_hotfix_branches" => false, "require_review_thread_resolution" => false) do |project|
+      client = MemoryClient.new(project)
+      ruleset = client.state.fetch("/rulesets/1")
+      rules = ruleset.fetch("rules")
+      pull_request = rules.find { |rule| rule["type"] == "pull_request" }
+
+      assert_equal ["refs/heads/main"], ruleset.dig("conditions", "ref_name", "include")
+      refute pull_request.dig("parameters", "required_review_thread_resolution")
+      assert_equal(%w[pull_request required_status_checks required_signatures non_fast_forward deletion],
+                   rules.map { |rule| rule["type"] })
+      assert_empty ruleset.fetch("bypass_actors")
+      assert_empty configuration(project, client).plan
+      assert configuration(project, client).verify!
+      assert_empty client.writes
+    end
+  end
+
+  def test_project_policy_changes_only_the_two_declared_settings
+    in_project do |project|
+      original = GitHub::Policy.new(project: project)
+      in_project("protect_hotfix_branches" => false, "require_review_thread_resolution" => false) do |custom_project|
+        custom = GitHub::Policy.new(project: custom_project)
+        expected = original.main_ruleset
+        expected["conditions"]["ref_name"]["include"] = ["refs/heads/main"]
+        expected["rules"].find { |rule| rule["type"] == "pull_request" }["parameters"][
+          "required_review_thread_resolution"
+        ] = false
+
+        assert_equal expected, custom.main_ruleset
+        assert_equal original.tags_ruleset, custom.tags_ruleset
+      end
     end
   end
 
