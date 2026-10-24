@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Security
+
+- Pin ruby/setup-ruby v1.335.0 in generated CI and release workflows, so their Ruby 3.4 and 4.0 jobs run 3.4.12 and 4.0.9 with the Onigmo regexp compilation fixes.
+
 ## [0.1.1] - 2026-10-05
 
 ### Added
